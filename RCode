@@ -1,0 +1,26 @@
+
+library(readxl)
+library("car", lib.loc="~/R/win-library/3.5")
+c <- read_excel("...c.xlsx")
+View(c)
+
+tapply(c$rating,c$name,mean)
+tapply(c$rating,c$mfr,mean)
+tapply(c$rating,c$type,mean)
+
+summary(m1 <- aov(c$rating~as.factor(c$mfr)))
+plot(TukeyHSD(m1))
+
+summary(m1 <- aov(c$rating~as.factor(c$type)))
+plot(TukeyHSD(m1))
+
+
+c <- c[,c(4:16)]
+full.model <- lm(rating ~., data = c)
+vif(full.model)
+model2 <- lm(rating ~.-potass, data = c)
+step.model <- stepAIC(model2, direction = "backward", trace = FALSE)
+summary(step.model)
+
+lm1=lm(rating~calories*sugars,data = c)
+summary(lm1)
